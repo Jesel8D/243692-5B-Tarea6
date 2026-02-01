@@ -10,14 +10,15 @@ export default async function Reporte5({
     const limit = 3;
     const page = Number(searchParams.page) || 1;
     const offset = (page - 1) * limit;
+
     const res = await query(
-        'SELECT dia, num_ventas, ticket_promedio FROM view_resumen_diario LIMIT $1 OFFSET $2',
+        'SELECT fecha_operacion, total_ventas_dia, ticket_promedio FROM view_resumen_diario LIMIT $1 OFFSET $2',
         [limit, offset]
     );
 
     return (
         <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Resumen de Ventas Diarias</h1>
+            <h1 className="text-2xl font-bold mb-4 text-white">Resumen de Ventas Diarias</h1>
 
             <div className="bg-black rounded-lg shadow overflow-hidden border border-gray-700">
                 <table className="w-full text-white">
@@ -31,8 +32,8 @@ export default async function Reporte5({
                     <tbody className="divide-y divide-gray-800">
                     {res.rows.map((row, i) => (
                         <tr key={i} className="hover:bg-gray-900 transition">
-                            <td className="p-3">{new Date(row.dia).toLocaleDateString()}</td>
-                            <td className="p-3">{row.num_ventas}</td>
+                            <td className="p-3">{new Date(row.fecha_operacion).toLocaleDateString()}</td>
+                            <td className="p-3">{row.total_ventas_dia}</td>
                             <td className="p-3 text-green-400">${row.ticket_promedio}</td>
                         </tr>
                     ))}
