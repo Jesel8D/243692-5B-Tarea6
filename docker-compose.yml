@@ -6,10 +6,10 @@ services:
     environment:
       POSTGRES_PASSWORD: master_password
       POSTGRES_DB: rollito_db
-    ports:  
+    ports:
       - "5432:5432"
     volumes:
-      # Cargamos los scripts en orden alfabético al iniciar
+      # Los scripts SQL deben estar dentro del servicio 'db'
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
       - ./db/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
       - ./db/reports_vw.sql:/docker-entrypoint-initdb.d/03_reports_vw.sql
@@ -21,4 +21,14 @@ services:
       timeout: 5s
       retries: 5
 
-  # Aquí agregaremos el servicio 'app' de Next.js más adelante
+  app:
+    build: ./web-app
+    container_name: rollito_web
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Usamos 'db' como host porque Docker crea una red interna donde el contenedor db es localizable por su nombre
+      DATABASE_URL: postgresql://webapp_user:rollito_password@db:5432/rollito_db
