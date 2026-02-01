@@ -15,3 +15,11 @@ Guia
 3. Ejecutar el comando:
    ```bash
    docker compose up --build
+
+
+## Justificación de Índices (db/indexes.sql)
+Se implementaron 3 índices estratégicos analizados con `EXPLAIN ANALYZE`:
+
+1. **idx_productos_categoria:** Optimiza el `LEFT JOIN` en la View 1. Sin él, Postgres haría un scan secuencial de la tabla productos para encontrar los IDs de categoría.
+2. **idx_ventas_fecha:** Vital para la View 5. Permite que el `GROUP BY v.fecha::DATE` sea mucho más rápido al tener las fechas ordenadas en el disco.
+3. **idx_detalle_producto:** Acelera las Views 2 y 3. Al agrupar por producto para sumar cantidades (`SUM(cantidad)`), el índice permite localizar todas las filas de un producto sin recorrer toda la tabla de detalles.
