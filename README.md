@@ -1,7 +1,7 @@
 # Rollito Panadería - Lab Reportes SQL
 
 Sistema de reportes de ventas para una panadería utilizando **Next.js**, **PostgreSQL** y **Docker Compose**.
-
+Guia
 ## Tecnologías
 - **Frontend:** Next.js 14 (App Router), Tailwind CSS.
 - **Backend:** Node.js (Server Components).
