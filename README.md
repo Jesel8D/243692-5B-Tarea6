@@ -17,7 +17,7 @@ Guia
    docker compose up --build
 
 
-## Justificación de Índices (db/indexes.sql)
+## Justificación de Índices (db/04_indexes.sql)
 Se implementaron 3 índices estratégicos analizados con `EXPLAIN ANALYZE`:
 
 1. **idx_productos_categoria:** Optimiza el `LEFT JOIN` en la View 1. Sin él, Postgres haría un scan secuencial de la tabla productos para encontrar los IDs de categoría.

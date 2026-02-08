@@ -1,10 +1,22 @@
 FROM node:20-alpine
+
 WORKDIR /app
+
+# Copiamos primero las dependencias para aprovechar el caché de Docker
 COPY package*.json ./
-RUN npm install
+
+# Instalamos dependencias
+RUN npm ci
+
+# Copiamos el código fuente
 COPY . .
-# Cambiamos la URL de la DB para que Next.js busque el contenedor 'db' en la red de Docker
-ENV DATABASE_URL=postgresql://webapp_user:rollito_password@db:5432/rollito_db
+
+# Build de Next.js
+# Nota: Next.js necesita saber que es prod, pero NO necesita la DB URL aquí
+ENV NODE_ENV=production
 RUN npm run build
+
 EXPOSE 3000
+
+# Iniciamos
 CMD ["npm", "start"]

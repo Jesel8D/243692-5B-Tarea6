@@ -1,11 +1,12 @@
 import { Pool } from 'pg';
 
-// Configuramos el pool de conexiones
+// Validar que la variable exista para evitar errores silenciosos
+if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL no está definida en las variables de entorno');
+}
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
 
-export const query = (text: string, params?: any[]) => {
-    // SQL parametrizado
-    return pool.query(text, params);
-};
+export const query = (text: string, params?: any[]) => pool.query(text, params);
