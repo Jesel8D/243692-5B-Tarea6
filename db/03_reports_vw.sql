@@ -119,3 +119,29 @@ HAVING COUNT(v.id) >= 1;
 
 -- VERIFY VIEW 5
 -- SELECT * FROM view_resumen_diario WHERE total_ventas_dia > 0;
+
+-- MODIFICACIÓN VIEW 2: Agregamos el cálculo del porcentaje visual directamente en SQL
+-- Eliminamos la necesidad de que JS calcule el ancho de la barra.
+CREATE OR REPLACE VIEW view_ranking_productos AS
+SELECT
+    p.nombre as producto,
+    SUM(dv.cantidad) as unidades_totales,
+    RANK() OVER (ORDER BY SUM(dv.cantidad) DESC) as posicion_ranking,
+    -- CÁLCULO BACKEND: Porcentaje respecto al líder para la barra de progreso
+    ROUND(
+            (SUM(dv.cantidad)::NUMERIC / MAX(SUM(dv.cantidad)) OVER()::NUMERIC) * 100,
+            2) as porcentaje_visual_relativo
+FROM detalle_ventas dv
+         JOIN productos p ON dv.producto_id = p.id
+GROUP BY p.nombre;
+
+-- NUEVA VIEW 6: KPI Globales (Para evitar el .reduce() en JS del Reporte 1)
+-- Esta vista devuelve una sola fila con totales generales
+CREATE OR REPLACE VIEW view_kpi_dashboard AS
+SELECT
+    (SELECT SUM(subtotal) FROM (
+                                   SELECT SUM(dv.cantidad * dv.precio_unitario) as subtotal
+                                   FROM detalle_ventas dv
+                               ) t) as venta_total_global,
+    (SELECT COUNT(*) FROM ventas) as total_transacciones,
+    (SELECT producto FROM view_ranking_productos WHERE posicion_ranking = 1 LIMIT 1) as producto_top;

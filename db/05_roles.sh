@@ -30,6 +30,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     GRANT SELECT ON view_clientes_vip TO "$APP_USER";
     GRANT SELECT ON view_estado_stock TO "$APP_USER";
     GRANT SELECT ON view_resumen_diario TO "$APP_USER";
+    GRANT SELECT ON view_kpi_dashboard TO "$APP_USER";
 
     -- 5. Configurar search_path
     ALTER ROLE "$APP_USER" SET search_path TO public;
