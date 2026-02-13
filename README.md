@@ -87,7 +87,6 @@ EXPLAIN ANALYZE SELECT * FROM view_ranking_productos;
 Resultados:
 
 ![Evidencia EXPLAIN ANALYZE](./screenshots/explain_analyze.png)
-*(Inserta aquí tu captura de pantalla del comando EXPLAIN)*
 
 ## Estructura de Base de Datos (Views)
 El sistema se basa en 5 Vistas Materializadas Lógicas:
@@ -105,7 +104,6 @@ view_resumen_diario: Agregación temporal con índices de fecha.
 Evidencia de creación (\dv):
 
 ![Listado de Vistas](./screenshots/dv_output.png)
-*(Inserta aquí tu captura de pantalla del comando \dv)*
 
 Instrucciones para el Profesor/Revisor
 Para verificar la seguridad:
