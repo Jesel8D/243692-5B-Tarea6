@@ -1,22 +1,28 @@
-FROM node:20-alpine
-
+# Production image, copy all the files and run next
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Copiamos primero las dependencias para aprovechar el caché de Docker
+ENV NODE_ENV=production
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 COPY package*.json ./
 
-# Instalamos dependencias
+# Install dependencies (only production to save space if needed, but here we kept simple ci)
 RUN npm ci
 
-# Copiamos el código fuente
 COPY . .
 
-# Build de Next.js
-# Nota: Next.js necesita saber que es prod, pero NO necesita la DB URL aquí
-ENV NODE_ENV=production
+# Set correct permissions
+RUN chown -R nextjs:nodejs /app
+
+# Switch to non-root user
+USER nextjs
+
 RUN npm run build
 
 EXPOSE 3000
 
-# Iniciamos
 CMD ["npm", "start"]
