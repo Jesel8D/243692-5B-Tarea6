@@ -1,5 +1,6 @@
-import { query } from '@/lib/db';
+import { getVIPClients } from '@/lib/queries';
 import { z } from 'zod';
+
 export const dynamic = 'force-dynamic';
 
 const FilterSchema = z.object({
@@ -7,16 +8,13 @@ const FilterSchema = z.object({
 });
 
 export default async function Reporte3({
-                                           searchParams,
-                                       }: {
+    searchParams,
+}: {
     searchParams: { [key: string]: string | string[] | undefined };
 }) {
     const { min } = FilterSchema.parse(searchParams);
 
-    const res = await query(
-        'SELECT cliente, transacciones, inversion_total FROM view_clientes_vip WHERE inversion_total >= $1',
-        [min]
-    );
+    const data = await getVIPClients(min);
 
     return (
         <div className="p-8">
@@ -27,7 +25,7 @@ export default async function Reporte3({
                 <div className="flex gap-2">
                     {[50, 100, 200, 500].map((val) => (
                         <a key={val} href={`?min=${val}`}
-                           className={`px-3 py-1 rounded-full border ${min === val ? 'bg-orange-500 text-white border-orange-500' : 'bg-black text-gray-400 border-gray-700'}`}>
+                            className={`px-3 py-1 rounded-full border ${min === val ? 'bg-orange-500 text-white border-orange-500' : 'bg-black text-gray-400 border-gray-700'}`}>
                             ${val}+
                         </a>
                     ))}
@@ -37,20 +35,20 @@ export default async function Reporte3({
             <div className="overflow-hidden rounded-lg border border-gray-700">
                 <table className="w-full bg-black text-white">
                     <thead>
-                    <tr className="bg-gray-800 border-b border-gray-700">
-                        <th className="p-3 text-left text-orange-400">Cliente</th>
-                        <th className="p-3 text-left text-orange-400">Compras</th>
-                        <th className="p-3 text-left text-orange-400">Total Gastado</th>
-                    </tr>
+                        <tr className="bg-gray-800 border-b border-gray-700">
+                            <th className="p-3 text-left text-orange-400">Cliente</th>
+                            <th className="p-3 text-left text-orange-400">Compras</th>
+                            <th className="p-3 text-left text-orange-400">Total Gastado</th>
+                        </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800">
-                    {res.rows.map((row, i) => (
-                        <tr key={i} className="hover:bg-gray-900">
-                            <td className="p-3 font-medium">{row.cliente}</td>
-                            <td className="p-3">{row.transacciones}</td>
-                            <td className="p-3 text-green-400">${row.inversion_total}</td>
-                        </tr>
-                    ))}
+                        {data.map((row, i) => (
+                            <tr key={i} className="hover:bg-gray-900">
+                                <td className="p-3 font-medium">{row.cliente}</td>
+                                <td className="p-3">{row.transacciones}</td>
+                                <td className="p-3 text-green-400">${row.inversion_total}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

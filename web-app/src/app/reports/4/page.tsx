@@ -1,20 +1,17 @@
-import { query } from '@/lib/db';
+import { getStockInventory } from '@/lib/queries';
 import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function Reporte4({
-                                           searchParams,
-                                       }: {
+    searchParams,
+}: {
     searchParams: { page?: string };
 }) {
     const limit = 2;
     const page = Number(searchParams.page) || 1;
     const offset = (page - 1) * limit;
 
-    const res = await query(
-        'SELECT producto, precio_actual, stock_disponible, nivel_precio FROM view_estado_stock LIMIT $1 OFFSET $2',
-        [limit, offset]
-    );
+    const stockItems = await getStockInventory(limit, offset);
 
     return (
         <div className="p-8">
@@ -24,7 +21,7 @@ export default async function Reporte4({
             </p>
 
             <div className="grid gap-4 mb-6">
-                {res.rows.map((item, i) => (
+                {stockItems.map((item, i) => (
                     <div key={i} className="p-4 bg-black border border-gray-800 border-l-4 border-l-orange-500 shadow-sm rounded">
                         <h3 className="font-bold text-white text-lg">{item.producto}</h3>
                         <p className="text-sm text-gray-400">
