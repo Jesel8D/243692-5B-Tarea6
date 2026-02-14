@@ -21,13 +21,16 @@ Clonar el repositorio:
 
 git clone https://github.com/Jesel8D/243692-5B-Tarea6
 cd RollitoPanaderia
-Configurar Variables de Entorno: Copiar el archivo de ejemplo y crear el archivo .env (este archivo no se sube al repositorio por seguridad):
-```
-```bash
+Configurar Variables de Entorno:
+El repositorio NO incluye el archivo `.env` por seguridad. Debes crearlo manualmente usando `.env.example` como plantilla.
 
+```bash
 cp .env.example .env
-Nota: Docker Compose leerá este archivo automáticamente para configurar la base de datos y la conexión de la app.
 ```
+
+ Abre el archivo `.env` y asegúrate de que las credenciales sean seguras (puedes dejar los valores por defecto para pruebas locales).
+ > **Nota Importante**: Docker Compose leerá este archivo automáticamente para configurar la base de datos y la conexión de la app. NO subas este archivo a GitHub.
+
 Levantar el entorno:
 
 ```bash
